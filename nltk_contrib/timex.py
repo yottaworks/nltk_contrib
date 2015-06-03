@@ -22,7 +22,7 @@ numbers = "(^a(?=\s)|one|two|three|four|five|six|seven|eight|nine|ten| \
           ninety|hundred|thousand)"
 day = "(monday|tuesday|wednesday|thursday|friday|saturday|sunday)"
 week_day = "(monday|tuesday|wednesday|thursday|friday|saturday|sunday)"
-month = "(january|february|march|april|may|june|july|august|september| \
+year_month = "(january|february|march|april|may|june|july|august|september| \
           october|november|december)"
 dmy = "(year|day|week|month)"
 rel_day = "(today|yesterday|tomorrow|tonight|tonite)"
@@ -31,7 +31,7 @@ exp2 = "(this|next|last)"
 iso = "\d+[/-]\d+[/-]\d+ \d+:\d+:\d+\.\d+"
 year = "((?<=\s)\d{4}|^\d{4})"
 regxp1 = "((\d+|(" + numbers + "[-\s]?)+) " + dmy + "s? " + exp1 + ")"
-regxp2 = "(" + exp2 + " (" + dmy + "|" + week_day + "|" + month + "))"
+regxp2 = "(" + exp2 + " (" + dmy + "|" + week_day + "|" + year_month + "))"
 
 reg1 = re.compile(regxp1, re.IGNORECASE)
 reg2 = re.compile(regxp2, re.IGNORECASE)
@@ -213,19 +213,19 @@ def ground(tagged_text, base_date):
 
         # Weekday in the previous week.
         elif re.match(r'last ' + week_day, timex, re.IGNORECASE):
-            day = hashweekdays[timex.split()[1]]
+            day = hashweekdays[timex.split()[1].lower().capitalize()]
             timex_val = str(base_date + RelativeDateTime(weeks=-1, \
                             weekday=(day,0)))
 
         # Weekday in the current week.
         elif re.match(r'this ' + week_day, timex, re.IGNORECASE):
-            day = hashweekdays[timex.split()[1]]
+            day = hashweekdays[timex.split()[1].lower().capitalize()]
             timex_val = str(base_date + RelativeDateTime(weeks=0, \
                             weekday=(day,0)))
 
         # Weekday in the following week.
         elif re.match(r'next ' + week_day, timex, re.IGNORECASE):
-            day = hashweekdays[timex.split()[1]]
+            day = hashweekdays[timex.split()[1].lower().capitalize()]
             timex_val = str(base_date + RelativeDateTime(weeks=+1, \
                               weekday=(day,0)))
 
@@ -247,18 +247,18 @@ def ground(tagged_text, base_date):
             timex_val = str(year) + 'W' + str(week)
 
         # Month in the previous year.
-        elif re.match(r'last ' + month, timex, re.IGNORECASE):
-            month = hashmonths[timex.split()[1]]
+        elif re.match(r'last ' + year_month, timex, re.IGNORECASE):
+            month = hashmonths[timex.split()[1].lower().capitalize()]
             timex_val = str(base_date.year - 1) + '-' + str(month)
 
         # Month in the current year.
-        elif re.match(r'this ' + month, timex, re.IGNORECASE):
-            month = hashmonths[timex.split()[1]]
+        elif re.match(r'this ' + year_month, timex, re.IGNORECASE):
+            month = hashmonths[timex.split()[1].lower().capitalize()]
             timex_val = str(base_date.year) + '-' + str(month)
 
         # Month in the following year.
-        elif re.match(r'next ' + month, timex, re.IGNORECASE):
-            month = hashmonths[timex.split()[1]]
+        elif re.match(r'next ' + year_month, timex, re.IGNORECASE):
+            month = hashmonths[timex.split()[1].lower().capitalize()]
             timex_val = str(base_date.year + 1) + '-' + str(month)
         elif re.match(r'last month', timex, re.IGNORECASE):
 
